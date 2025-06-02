@@ -8,6 +8,7 @@ import {cn} from "@/lib/utils";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {NavbarSidebar} from "@/app/(home)/_components/navbar-sidebar";
 import { Icons } from "@/components/common/icons";
+import {siteConfig} from "@/config/site";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -49,7 +50,9 @@ export const Navbar = () => {
   return (
     <nav className="pl-6 h-20 flex border-b justify-between font-medium bg-white">
       <Link href='/' className="flex items-center">
-        <span className={cn(inter.className, 'text-3xl md:text-5xl font-semibold tracking-tighter')}>BookIt</span>
+        <span className={cn(inter.className, 'text-3xl md:text-5xl font-semibold tracking-tighter')}>
+          {siteConfig.name}
+        </span>
       </Link>
 
       <NavbarSidebar
