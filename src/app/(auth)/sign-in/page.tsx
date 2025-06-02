@@ -1,5 +1,5 @@
 import {siteConfig} from "@/config/site";
-import {SignInGoogle} from "@/components/common/sign-in-google";
+import {SignIn} from "@/components/common/auth-components";
 
 const SignUpPage = () => {
   return (
@@ -8,7 +8,7 @@ const SignUpPage = () => {
         <h1 className="text-2xl font-bold">Sign Up to {siteConfig.name}</h1>
       </div>
       <div className="flex flex-col gap-4 items-center justify-center">
-        <SignInGoogle />
+        <SignIn />
       </div>
     </div>
   );
