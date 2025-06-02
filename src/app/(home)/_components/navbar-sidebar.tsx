@@ -1,6 +1,8 @@
 import {Sheet, SheetContent, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import Link from "next/link";
+import {signIn, signOut, useSession} from "next-auth/react";
+import {Button} from "@/components/ui/button";
 
 interface NavbarItem {
   href: string;
@@ -14,6 +16,7 @@ interface NavbarSidebarProps {
 }
 
 export const NavbarSidebar = ({items, isOpen, onOpenChange}: NavbarSidebarProps) => {
+  const {data: session} = useSession();
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent
@@ -29,27 +32,39 @@ export const NavbarSidebar = ({items, isOpen, onOpenChange}: NavbarSidebarProps)
               href={item.href}
               key={item.href}
               onClick={() => onOpenChange(false)}
-              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
+              className="bg-transparent rounded-none text-left p-4 text-black border-0 flex items-center text-base font-medium w-full"
             >
               {item.children}
             </Link>
           ))}
 
           <div className="border-t">
-            <Link
-              href="/sign-in"
-              onClick={() => onOpenChange(false)}
-              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/sign-up"
-              onClick={() => onOpenChange(false)}
-              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
-            >
-              Register
-            </Link>
+            {session?.user ? (
+              <div className="flex flex-col justify-center gap-2 pt-2">
+                <p className="text-center">
+                  Hello, <b className="font-semibold">{session.user.name}</b>
+                </p>
+                <Button
+                  onClick={() => {
+                    onOpenChange(false);
+                    signOut();
+                  }}
+                  className="bg-transparent rounded-none text-left p-4 text-black border-0 flex items-center text-base font-medium w-full"
+                >
+                  Log out
+                </Button>
+              </div>
+            ) : (
+              <Button
+                onClick={() => {
+                  onOpenChange(false)
+                  signIn('google')
+                }}
+                className="bg-transparent rounded-none text-left p-4 text-black border-0 flex items-center text-base font-medium w-full"
+              >
+                Log in
+              </Button>
+            )}
           </div>
         </ScrollArea>
       </SheetContent>

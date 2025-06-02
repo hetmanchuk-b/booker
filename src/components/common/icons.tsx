@@ -1,6 +1,7 @@
 import {
   Check,
   MenuIcon,
+  LoaderCircle,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
@@ -10,6 +11,7 @@ export type Icon = LucideIcon;
 export const Icons = {
   check: Check,
   menu: MenuIcon,
+  loader: LoaderCircle,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

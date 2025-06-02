@@ -40,21 +40,24 @@ model Contact {
 }
 
 model User {
-  id             String    @id @default(uuid())
-  email          String    @unique
+  id             String          @id @default(uuid())
+  email          String          @unique
   hashedPassword String
   name           String?
-  role           UserRole  @default(USER)
+  role           UserRole        @default(USER)
   contact        Contact[]
   master         Master?
   bookings       Booking[]
-  createdAt      DateTime  @default(now())
+  sessions       Session[]
+  authenticator  Authenticator[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Master {
   id         String  @id @default(uuid())
   userId     String  @unique
-  user       User    @relation(fields: [userId], references: [id])
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   profession String?
   bio        String?
 
@@ -67,7 +70,7 @@ model Master {
 model Schedule {
   id        String         @id @default(uuid())
   masterId  String
-  master    Master         @relation(fields: [masterId], references: [id])
+  master    Master         @relation(fields: [masterId], references: [id], onDelete: Cascade)
   startTime DateTime
   endTime   DateTime
   status    ScheduleStatus @default(FREE)
@@ -83,8 +86,42 @@ model Booking {
   scheduleId String         @unique
   schedule   Schedule       @relation(fields: [scheduleId], references: [id])
   masterId   String
-  master     Master         @relation(fields: [masterId], references: [id])
+  master     Master         @relation(fields: [masterId], references: [id], onDelete: Cascade)
   status     BookingStatus? @default(PENDING)
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
 }
